@@ -16,8 +16,11 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Shop App'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Shop app'),
+      ),
+      body: Center(child: Text('Shop App')),
     );
   }
 }
