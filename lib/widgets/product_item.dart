@@ -1,32 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/product.dart';
 
 import '../colors/ships_officer.dart';
 
 import '../screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-
-  ProductItem(this.id, this.title, this.imageUrl);
-
   @override
   Widget build(BuildContext context) {
+    // Rebuild only the return, not the entire method
+    // It can combine both mehtods, for example for set listen false to some methods
+    final product = Provider.of<Product>(context, listen: false);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: GridTile(
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context)
-                .pushNamed(ProductDetailScreen.routeName, arguments: this.id);
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                arguments: product.id);
           },
           child: Stack(children: <Widget>[
             Container(
               height: double.infinity,
               width: double.infinity,
               child: Image.network(
-                this.imageUrl,
+                product.imageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -41,26 +42,30 @@ class ProductItem extends StatelessWidget {
         ),
         header: GridTileBar(
           title: Text(
-            title,
+            product.title,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
           ),
         ),
-        footer: GridTileBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.favorite,
-              color: Colors.red,
+        footer: Consumer<Product>(
+          builder: (ctx, product, child) => GridTileBar(
+            leading: IconButton(
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                product.toggleFavoriteValue();
+              },
             ),
-            onPressed: () {},
-          ),
-          title: Text(''),
-          trailing: IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.green,
+            title: Text(''),
+            trailing: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.green,
+              ),
+              onPressed: () {},
             ),
-            onPressed: () {},
           ),
         ),
       ),
