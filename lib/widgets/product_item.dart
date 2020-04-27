@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
+import '../providers/cart.dart';
 
 import '../colors/ships_officer.dart';
 
@@ -13,6 +14,7 @@ class ProductItem extends StatelessWidget {
     // Rebuild only the return, not the entire method
     // It can combine both mehtods, for example for set listen false to some methods
     final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
@@ -64,7 +66,10 @@ class ProductItem extends StatelessWidget {
                 Icons.shopping_cart,
                 color: Colors.green,
               ),
-              onPressed: () {},
+              onPressed: () {
+                cart.addItem(
+                    product.id, product.price, product.title, product.imageUrl);
+              },
             ),
           ),
         ),
