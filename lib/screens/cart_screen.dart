@@ -40,7 +40,7 @@ class CartScreen extends StatelessWidget {
                   Chip(
                     backgroundColor: Theme.of(context).primaryColor,
                     label: Text(
-                      '\$${cart.totalAmnount}',
+                      '\$${cart.totalAmnount.toStringAsFixed(2)}',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w900),
                     ),
@@ -53,23 +53,7 @@ class CartScreen extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: RaisedButton(
-              child: Text(
-                'Order Now',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              onPressed: () {
-                Provider.of<Orders>(context, listen: false).addOrder(
-                  cart.items.values.toList(),
-                  cart.totalAmnount,
-                );
-                cart.clearCart();
-              },
-              color: Theme.of(context).primaryColor,
-            ),
+            child: OrderButton(cart: cart),
           ),
           Expanded(
             child: ListView.builder(
@@ -78,6 +62,54 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton(
+      child: _isLoading
+          ? Container(
+              padding: EdgeInsets.all(10), child: CircularProgressIndicator())
+          : Text(
+              'Order Now',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+      onPressed: (widget.cart.totalAmnount <= 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<Orders>(context, listen: false).addOrder(
+                widget.cart.items.values.toList(),
+                widget.cart.totalAmnount,
+              );
+              widget.cart.clearCart();
+              setState(() {
+                _isLoading = false;
+              });
+            },
+      color: Theme.of(context).primaryColor,
     );
   }
 }

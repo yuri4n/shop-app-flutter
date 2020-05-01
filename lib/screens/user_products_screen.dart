@@ -11,6 +11,10 @@ import '../widgets/user_product_item.dart';
 class UserProductsScreen extends StatelessWidget {
   static const String routeName = '/user-products';
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<Products>(context).fetchAndSetProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<Products>(context);
@@ -18,10 +22,7 @@ class UserProductsScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title:
-          Text('Your Products', style: Theme
-              .of(context)
-              .textTheme
-              .title),
+              Text('Your Products', style: Theme.of(context).textTheme.title),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),
@@ -32,13 +33,16 @@ class UserProductsScreen extends StatelessWidget {
           ],
         ),
         drawer: AppDrawer(),
-        body: Container(
-          padding: EdgeInsets.all(20),
-          child: ListView.builder(
-            itemCount: productsData.items.length,
-            itemBuilder: (ctx, i) =>
-                Card(margin: EdgeInsets.only(bottom: 20),
-                    child: UserProductItem(productsData.items[i].id)),
+        body: RefreshIndicator(
+          onRefresh: () => _refreshProducts(context),
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: ListView.builder(
+              itemCount: productsData.items.length,
+              itemBuilder: (ctx, i) => Card(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: UserProductItem(productsData.items[i].id)),
+            ),
           ),
         ));
   }
