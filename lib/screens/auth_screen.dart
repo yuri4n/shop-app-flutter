@@ -131,13 +131,11 @@ class _AuthCardState extends State<AuthCard> {
     try {
       if (_authMode == AuthMode.Login) {
         await Provider.of<Auth>(context, listen: false)
-            .signIn(_authData['email'], _authData['password']);
+            .logIn(_authData['email'], _authData['password']);
       } else {
         await Provider.of<Auth>(context, listen: false)
             .signUp(_authData['email'], _authData['password']);
       }
-
-      Navigator.of(context).pushNamed(ProductsOverviewScreen.routeName);
     } on HttpException catch (error) {
       String errorMessage = 'Authentication failed.';
 
