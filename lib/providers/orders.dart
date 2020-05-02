@@ -22,8 +22,9 @@ class OrderItem {
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
   final String authToken;
+  final String userId;
 
-  Orders(this.authToken, this._orders);
+  Orders(this.authToken, this.userId, this._orders);
 
   List<OrderItem> get orders {
     return [..._orders];
@@ -31,7 +32,7 @@ class Orders with ChangeNotifier {
 
   Future<void> fetchAndSetOrders() async {
     final String url =
-        'https://shop-app-d85d0.firebaseio.com/orders.json?auth=${this.authToken}';
+        'https://shop-app-d85d0.firebaseio.com/orders/${this.userId}.json?auth=${this.authToken}';
 
     final List<OrderItem> loadedOrders = [];
     final response = await http.get(url);

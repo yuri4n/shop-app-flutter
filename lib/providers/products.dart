@@ -7,11 +7,11 @@ import '../models/product.dart';
 import '../models/http_exception.dart';
 
 class Products with ChangeNotifier {
-  final String authToken;
-
-  Products(this.authToken, this._items);
-
   List<Product> _items = [];
+  final String authToken;
+  final String userId;
+
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -26,28 +26,40 @@ class Products with ChangeNotifier {
     return item != null ? item : null;
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? '&orderBy="creatorId"&equalTo="${this.userId}"' : '';
     final String url =
-        'https://shop-app-d85d0.firebaseio.com/products.json?auth=${this.authToken}';
+        'https://shop-app-d85d0.firebaseio.com/products.json?auth=${this.authToken}$filterString';
 
     try {
       final response = await http.get(url);
       final extractData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProduct = [];
-      if (extractData != null) {
-        extractData.forEach((key, item) {
-          loadedProduct.add(Product(
-              id: key,
-              title: item['title'],
-              description: item['description'],
-              price: item['price'],
-              isFavorite: item['isFavorite'],
-              imageUrl: item['imageUrl']));
 
-          _items = loadedProduct;
-          notifyListeners();
-        });
+      if (extractData == null) {
+        return;
       }
+
+      final String favoriteUrl =
+          'https://shop-app-d85d0.firebaseio.com/userFavorites/$userId.json?auth=${this.authToken}';
+
+      final favoriteResponse = await http.get(favoriteUrl);
+      final favoriteData = json.decode(favoriteResponse.body);
+
+      extractData.forEach((key, item) {
+        loadedProduct.add(Product(
+            id: key,
+            title: item['title'],
+            description: item['description'],
+            price: item['price'],
+            isFavorite:
+                favoriteData == null ? false : favoriteData[key] ?? false,
+            imageUrl: item['imageUrl']));
+
+        _items = loadedProduct;
+        notifyListeners();
+      });
     } catch (error) {
       throw (error);
     }
@@ -65,7 +77,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavorite,
+          'creatorId': this.userId,
         }),
       );
 
