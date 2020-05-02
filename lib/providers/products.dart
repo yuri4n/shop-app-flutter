@@ -7,6 +7,10 @@ import '../models/product.dart';
 import '../models/http_exception.dart';
 
 class Products with ChangeNotifier {
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> _items = [];
 
   List<Product> get items {
@@ -23,7 +27,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://shop-app-d85d0.firebaseio.com/products.json';
+    final String url =
+        'https://shop-app-d85d0.firebaseio.com/products.json?auth=${this.authToken}';
 
     try {
       final response = await http.get(url);
@@ -49,7 +54,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://shop-app-d85d0.firebaseio.com/products.json';
+    final url =
+        'https://shop-app-d85d0.firebaseio.com/products.json?auth=${this.authToken}';
 
     try {
       final response = await http.post(
@@ -82,7 +88,8 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(String id, Product newProduct) async {
     final productIndex = _items.indexWhere((item) => item.id == id);
     if (productIndex >= 0) {
-      final url = 'https://shop-app-d85d0.firebaseio.com/products/$id.json';
+      final url =
+          'https://shop-app-d85d0.firebaseio.com/products/$id.json?auth=${this.authToken}';
       await http.patch(url,
           body: json.encode({
             'title': newProduct.title,
@@ -97,7 +104,8 @@ class Products with ChangeNotifier {
 
   // Optimistic Update pattern
   Future<void> deleteProduct(String id) async {
-    final url = 'https://shop-app-d85d0.firebaseio.com/products/$id.json';
+    final url =
+        'https://shop-app-d85d0.firebaseio.com/products/$id.json?auth=${this.authToken}';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     var existingProduct = _items[existingProductIndex];
 

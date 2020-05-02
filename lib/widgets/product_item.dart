@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../providers/cart.dart';
+import '../providers/auth.dart';
 
 import '../colors/ships_officer.dart';
 
@@ -15,6 +16,7 @@ class ProductItem extends StatelessWidget {
     // It can combine both mehtods, for example for set listen false to some methods
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
@@ -57,7 +59,7 @@ class ProductItem extends StatelessWidget {
                 color: Colors.red,
               ),
               onPressed: () {
-                product.toggleFavoriteValue();
+                product.toggleFavoriteValue(authData.token);
               },
             ),
             title: Text(''),

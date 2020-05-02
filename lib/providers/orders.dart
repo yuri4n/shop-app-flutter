@@ -21,13 +21,17 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
+  final String authToken;
+
+  Orders(this.authToken, this._orders);
 
   List<OrderItem> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
-    const String url = 'https://shop-app-d85d0.firebaseio.com/orders.json';
+    final String url =
+        'https://shop-app-d85d0.firebaseio.com/orders.json?auth=${this.authToken}';
 
     final List<OrderItem> loadedOrders = [];
     final response = await http.get(url);
@@ -52,12 +56,13 @@ class Orders with ChangeNotifier {
       ));
     });
 
-    _orders = loadedOrders;
+    _orders = loadedOrders.reversed.toList();
     notifyListeners();
   }
 
   Future<void> addOrder(List<Item> cartProducts, double total) async {
-    const String url = 'https://shop-app-d85d0.firebaseio.com/orders.json';
+    final String url =
+        'https://shop-app-d85d0.firebaseio.com/orders.json?auth=${this.authToken}';
     final DateTime timeStamp = DateTime.now();
 
     final response = await http.post(url,
