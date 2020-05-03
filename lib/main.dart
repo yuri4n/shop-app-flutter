@@ -6,6 +6,8 @@ import 'providers/cart.dart';
 import 'providers/orders.dart';
 import 'providers/auth.dart';
 
+// import 'helpers/custom_route.dart';
+
 import 'colors/ships_officer.dart';
 import 'colors/rich_gardenia.dart';
 
@@ -44,14 +46,23 @@ class MyApp extends StatelessWidget {
         builder: (ctx, authData, child) => MaterialApp(
           title: 'Shop App',
           theme: ThemeData(
-              primarySwatch: richGardenia,
-              fontFamily: 'Source Sans Pro',
-              canvasColor: shipsOfficer,
-              textTheme: ThemeData.light().textTheme.copyWith(
+            primarySwatch: richGardenia,
+            fontFamily: 'Source Sans Pro',
+            canvasColor: shipsOfficer,
+            textTheme: ThemeData.light().textTheme.copyWith(
                   title: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      color: Colors.white))),
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+            // pageTransitionsTheme: PageTransitionsTheme(
+            //   builders: {
+            //     TargetPlatform.android: CustomPageTransitionBuilder(),
+            //     TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            //   },
+            // ),
+          ),
           home: authData.isAuth
               ? ProductsOverviewScreen()
               : FutureBuilder(

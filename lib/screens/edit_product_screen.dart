@@ -160,6 +160,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 child: ListView(
                   children: <Widget>[
                     TextFormField(
+                      style: TextStyle(color: Colors.white),
                       initialValue: _initValues['title'],
                       decoration: InputDecoration(
                         labelText: 'Title',
@@ -187,6 +188,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                     ),
                     TextFormField(
+                      style: TextStyle(color: Colors.white),
                       initialValue: _initValues['price'],
                       decoration: InputDecoration(
                         labelText: 'Price',
@@ -223,6 +225,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                     ),
                     TextFormField(
+                      style: TextStyle(color: Colors.white),
                       initialValue: _initValues['description'],
                       decoration: InputDecoration(
                         labelText: 'Description',
@@ -279,6 +282,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         ),
                         Expanded(
                           child: TextFormField(
+                            style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               labelText: 'Image URL',
                               labelStyle: TextStyle(color: Colors.white),
