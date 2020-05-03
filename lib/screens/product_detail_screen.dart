@@ -13,48 +13,55 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<Products>(context, listen: false).findById(productId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          product.title,
-          style: Theme.of(context).textTheme.title,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300,
-              width: double.infinity,
-              child: Image.network(
-                product.imageUrl,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              '\$${product.price}',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              child: Text(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
                 product.title,
                 style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 26),
+              ),
+              background: Hero(
+                tag: product.id,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  '\$${product.price}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Text(product.description,
+                    style: TextStyle(color: Colors.white, fontSize: 22)),
+              ),
+            ]),
+          ),
+        ],
       ),
     );
   }
